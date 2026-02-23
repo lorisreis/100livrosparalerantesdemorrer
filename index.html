@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>100 Maiores Clássicos da Ficção de Todos os Tempos</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f0f1a;
+      --bg2: #16162a;
+      --bg3: #1e1e35;
+      --card: #1a1a2e;
+      --card-hover: #22223b;
+      --accent: #c9a84c;
+      --accent2: #e8c97a;
+      --text: #e8e8f0;
+      --text2: #a0a0c0;
+      --border: #2a2a4a;
+      --gold: #c9a84c;
+      --silver: #a0a0c0;
+      --bronze: #cd7f32;
+      --tag-bg: #2a2a4a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a3e 50%, #0f0f1a 100%);
+      border-bottom: 1px solid var(--accent);
+      padding: 2.5rem 2rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at center, rgba(201,168,76,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-icon {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      color: var(--accent2);
+      letter-spacing: 0.05em;
+      text-shadow: 0 0 30px rgba(201,168,76,0.4);
+      margin-bottom: 0.5rem;
+    }
+    header p {
+      color: var(--text2);
+      font-size: 1rem;
+      font-style: italic;
+    }
+    .header-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .stat-item {
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--accent);
+      display: block;
+    }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text2);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* NAVIGATION TABS */
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1.5rem 1rem;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 0.6rem 1.4rem;
+      border-radius: 2rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #0f0f1a;
+      border-color: var(--accent);
+      font-weight: bold;
+    }
+
+    /* MAIN CONTAINER */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    /* SECTION */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* SEARCH & FILTERS */
+    .controls {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .progress-bar {
+      height: 6px;
+      background: var(--bg3);
+      border-radius: 3px;
+      overflow: hidden;
+      width: 150px;
+      margin-left: auto;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width 0.3s;
+    }
+    .progress-text {
+      font-size: 0.75rem;
+      color: var(--text2);
+      white-space: nowrap;
+      margin-left: 0.5rem;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-box:focus { border-color: var(--accent); }
+    .search-box::placeholder { color: var(--text2); }
+    .filter-select {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      color: var(--text);
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .filter-select:focus { border-color: var(--accent); }
+    .results-count {
+      color: var(--text2);
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    /* VIEW TOGGLE */
+    .view-toggle {
+      display: flex;
+      gap: 0.3rem;
+    }
+    .view-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 0.5rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    .view-btn.active { background: var(--accent); color: #0f0f1a; border-color: var(--accent); }
+
+    /* BOOK GRID */
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.2rem;
+    }
+    .books-grid.list-view {
+      grid-template-columns: 1fr;
+    }
+
+    /* BOOK CARD */
+    .book-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+    }
+    .book-card.read {
+      opacity: 0.7;
+      background: var(--bg3);
+    }
+    .book-card.read .book-title {
+      text-decoration: line-through;
+      color: var(--text2);
+    }
+    .book-checkbox {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      margin-top: 0.2rem;
+      cursor: pointer;
+      accent-color: var(--accent);
+    }
+    .book-card-content {
+      flex: 1;
+    }
+    .book-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .book-card:hover {
+      background: var(--card-hover);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(201,168,76,0.15);
+    }
+    .book-card:hover::before { opacity: 1; }
+
+    .book-rank {
+      font-size: 0.75rem;
+      color: var(--text2);
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-weight: bold;
+      font-size: 0.8rem;
+    }
+    .rank-1 { background: var(--gold); color: #0f0f1a; }
+    .rank-2 { background: var(--silver); color: #0f0f1a; }
+    .rank-3 { background: var(--bronze); color: #fff; }
+    .rank-other { background: var(--bg3); color: var(--text2); border: 1px solid var(--border); }
+
+    .book-title {
+      font-size: 1.05rem;
+      color: var(--accent2);
+      margin-bottom: 0.3rem;
+      line-height: 1.3;
+    }
+    .book-author {
+      font-size: 0.9rem;
+      color: var(--text2);
+      font-style: italic;
+      margin-bottom: 0.6rem;
+    }
+    .book-meta {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.7rem;
+    }
+    .tag {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 0.2rem 0.6rem;
+      border-radius: 1rem;
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+    .tag.year { color: var(--accent); border-color: rgba(201,168,76,0.3); }
+    .tag.country { color: #7eb8f7; border-color: rgba(126,184,247,0.3); }
+    .tag.genre { color: #b8f7a0; border-color: rgba(184,247,160,0.3); }
+    .book-desc {
+      font-size: 0.82rem;
+      color: var(--text2);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* LIST VIEW CARD */
+    .books-grid.list-view .book-card {
+      padding: 1rem 1.2rem;
+    }
+    .books-grid.list-view .book-rank { margin-bottom: 0; flex-shrink: 0; }
+    .books-grid.list-view .book-content { flex: 1; }
+    .books-grid.list-view .book-desc { -webkit-line-clamp: 2; }
+    .books-grid:not(.list-view) .book-card {
+      flex-direction: column;
+      gap: 0;
+    }
+    .books-grid:not(.list-view) .book-checkbox {
+      position: absolute;
+      top: 0.8rem;
+      right: 0.8rem;
+      margin-top: 0;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--card);
+      border: 1px solid var(--accent);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .modal-close:hover { background: var(--accent); color: #0f0f1a; border-color: var(--accent); }
+    .modal-rank { font-size: 3rem; font-weight: bold; color: var(--accent); margin-bottom: 0.5rem; }
+    .modal-title { font-size: 1.6rem; color: var(--accent2); margin-bottom: 0.3rem; line-height: 1.3; }
+    .modal-author { font-size: 1.1rem; color: var(--text2); font-style: italic; margin-bottom: 1.2rem; }
+    .modal-tags { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+    .modal-tag {
+      padding: 0.3rem 0.8rem;
+      border-radius: 1rem;
+      font-size: 0.85rem;
+      border: 1px solid;
+    }
+    .modal-tag.year { color: var(--accent); border-color: var(--accent); background: rgba(201,168,76,0.1); }
+    .modal-tag.country { color: #7eb8f7; border-color: #7eb8f7; background: rgba(126,184,247,0.1); }
+    .modal-tag.genre { color: #b8f7a0; border-color: #b8f7a0; background: rgba(184,247,160,0.1); }
+    .modal-tag.century { color: #f7b8e0; border-color: #f7b8e0; background: rgba(247,184,224,0.1); }
+    .modal-desc { font-size: 1rem; line-height: 1.7; color: var(--text); }
+    .modal-divider { border: none; border-top: 1px solid var(--border); margin: 1.2rem 0; }
+
+    /* CHARTS SECTION */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 1.5rem;
+    }
+    .chart-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+    .chart-card h3 {
+      color: var(--accent2);
+      font-size: 1rem;
+      margin-bottom: 1.2rem;
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+    .chart-container { position: relative; height: 280px; }
+
+    /* TOP AUTHORS TABLE */
+    .table-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .table-card h3 {
+      color: var(--accent2);
+      font-size: 1rem;
+      margin-bottom: 1.2rem;
+      letter-spacing: 0.05em;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      text-align: left;
+      padding: 0.7rem 1rem;
+      color: var(--text2);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 0.7rem 1rem;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(42,42,74,0.5);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg3); }
+    .bar-cell { min-width: 120px; }
+    .bar-fill {
+      height: 8px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 4px;
+    }
+
+    /* TIMELINE SECTION */
+    .timeline-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .timeline-section h3 {
+      color: var(--accent2);
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.8rem;
+    }
+    .timeline-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .timeline-item:hover { border-color: var(--accent); background: var(--card-hover); }
+    .timeline-year { font-size: 1.1rem; color: var(--accent); font-weight: bold; }
+    .timeline-title { font-size: 0.75rem; color: var(--text2); margin-top: 0.3rem; line-height: 1.3; }
+    .timeline-author { font-size: 0.7rem; color: var(--text2); opacity: 0.7; font-style: italic; }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text2);
+    }
+    .empty-state span { font-size: 3rem; display: block; margin-bottom: 1rem; }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text2);
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    @media (max-width: 600px) {
+      .charts-grid { grid-template-columns: 1fr; }
+      .books-grid { grid-template-columns: 1fr; }
+      .controls { flex-direction: column; }
+      .search-box { min-width: unset; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="header-icon">📚</span>
+  <h1>100 Maiores Clássicos da Ficção</h1>
+  <p>Uma curadoria das obras de ficção mais importantes e influentes de todos os tempos</p>
+  <div class="header-stats">
+    <div class="stat-item">
+      <span class="stat-number" id="stat-books">100</span>
+      <span class="stat-label">Obras</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number" id="stat-authors">—</span>
+      <span class="stat-label">Autores</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number" id="stat-countries">—</span>
+      <span class="stat-label">Países</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number" id="stat-span">—</span>
+      <span class="stat-label">Anos de História</span>
+    </div>
+  </div>
+</header>
+
+<nav class="nav-tabs">
+  <button class="tab-btn active" onclick="showSection('lista')">📖 Lista Completa</button>
+  <button class="tab-btn" onclick="showSection('graficos')">📊 Gráficos & Análises</button>
+  <button class="tab-btn" onclick="showSection('timeline')">🕰️ Linha do Tempo</button>
+</nav>
+
+<div class="container">
+
+  <!-- LISTA SECTION -->
+  <div id="section-lista" class="section active">
+    <div class="controls">
+      <input type="text" class="search-box" id="searchInput" placeholder="🔍  Buscar por título, autor ou gênero..." oninput="filterBooks()">
+      <select class="filter-select" id="filterGenre" onchange="filterBooks()">
+        <option value="">Todos os Gêneros</option>
+      </select>
+      <select class="filter-select" id="filterCountry" onchange="filterBooks()">
+        <option value="">Todos os Países</option>
+      </select>
+      <select class="filter-select" id="filterCentury" onchange="filterBooks()">
+        <option value="">Todos os Séculos</option>
+        <option value="XVII">Século XVII</option>
+        <option value="XVIII">Século XVIII</option>
+        <option value="XIX">Século XIX</option>
+        <option value="XX">Século XX</option>
+        <option value="XXI">Século XXI</option>
+      </select>
+      <div class="view-toggle">
+        <button class="view-btn active" id="gridBtn" onclick="setView('grid')" title="Grade">⊞</button>
+        <button class="view-btn" id="listBtn" onclick="setView('list')" title="Lista">☰</button>
+      </div>
+      <span class="results-count" id="resultsCount">100 obras</span>
+      <div style="display:flex; align-items:center; gap:0.5rem; margin-left:auto;">
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <span class="progress-text" id="progressText">0/100</span>
+      </div>
+    </div>
+    <div class="books-grid" id="booksGrid"></div>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <span>📭</span>
+      <p>Nenhuma obra encontrada com os filtros selecionados.</p>
+    </div>
+  </div>
+
+  <!-- GRAFICOS SECTION -->
+  <div id="section-graficos" class="section">
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3>Distribuição por Século</h3>
+        <div class="chart-container">
+          <canvas id="chartCentury"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Países Mais Representados</h3>
+        <div class="chart-container">
+          <canvas id="chartCountry"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Gêneros Literários</h3>
+        <div class="chart-container">
+          <canvas id="chartGenre"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Publicações por Década (Séc. XX)</h3>
+        <div class="chart-container">
+          <canvas id="chartDecade"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="table-card">
+      <h3>Autores com Mais Obras na Lista</h3>
+      <table id="authorsTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Autor</th>
+            <th>Obras</th>
+            <th class="bar-cell">Proporção</th>
+          </tr>
+        </thead>
+        <tbody id="authorsTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TIMELINE SECTION -->
+  <div id="section-timeline" class="section">
+    <div class="timeline-section">
+      <h3>Obras Ordenadas Cronologicamente</h3>
+      <div class="timeline-grid" id="timelineGrid"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div class="modal-rank" id="modalRank"></div>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-author" id="modalAuthor"></div>
+    <div class="modal-tags" id="modalTags"></div>
+    <hr class="modal-divider">
+    <div class="modal-desc" id="modalDesc"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Curadoria baseada em múltiplas listas de referência: <em>The Guardian</em>, <em>Modern Library</em>, <em>Time Magazine</em> e outras fontes literárias de prestígio.</p>
+  <p style="margin-top:0.5rem">Todos os títulos são obras de ficção criadas por seus respectivos autores.</p>
+</footer>
+
+<script>
+const books = [
+  {rank:1,title:"Dom Quixote",author:"Miguel de Cervantes",year:1605,country:"Espanha",genre:"Aventura / Sátira",century:"XVII",description:"A história do cavaleiro errante Dom Quixote e seu fiel escudeiro Sancho Pança. Considerado o primeiro romance moderno e um dos livros mais influentes da história da literatura."},
+  {rank:2,title:"Crime e Castigo",author:"Fyodor Dostoevsky",year:1866,country:"Rússia",genre:"Romance Psicológico",century:"XIX",description:"O estudante Raskolnikov comete um assassinato e enfrenta as consequências psicológicas e morais de seu ato. Uma das obras mais profundas da literatura mundial."},
+  {rank:3,title:"Guerra e Paz",author:"Leo Tolstoy",year:1869,country:"Rússia",genre:"Romance Histórico",century:"XIX",description:"Épico monumental que retrata a sociedade russa durante as guerras napoleônicas, explorando temas de amor, guerra, destino e redenção."},
+  {rank:4,title:"Anna Karenina",author:"Leo Tolstoy",year:1877,country:"Rússia",genre:"Romance",century:"XIX",description:"A história trágica de Anna Karenina, uma mulher da alta sociedade russa que abandona tudo por um amor proibido. Considerado por muitos o romance mais perfeito já escrito."},
+  {rank:5,title:"Os Irmãos Karamazov",author:"Fyodor Dostoevsky",year:1880,country:"Rússia",genre:"Romance Filosófico",century:"XIX",description:"O último e mais ambicioso romance de Dostoevsky, explorando questões de fé, dúvida, moralidade e livre-arbítrio através de uma família russa disfuncional."},
+  {rank:6,title:"Ulysses",author:"James Joyce",year:1922,country:"Irlanda",genre:"Modernismo",century:"XX",description:"Um dia na vida de Leopold Bloom em Dublin, narrado com técnicas inovadoras de fluxo de consciência. Considerado o romance mais influente do século XX."},
+  {rank:7,title:"Em Busca do Tempo Perdido",author:"Marcel Proust",year:1913,country:"França",genre:"Modernismo",century:"XX",description:"Monumental obra em sete volumes que explora a memória, o tempo e a experiência humana na Paris da Belle Époque. Provavelmente o romance mais longo desta lista."},
+  {rank:8,title:"Madame Bovary",author:"Gustave Flaubert",year:1857,country:"França",genre:"Realismo",century:"XIX",description:"Emma Bovary, insatisfeita com a vida provincial, busca escapar através de romances e gastos extravagantes. Um marco do realismo literário."},
+  {rank:9,title:"O Grande Gatsby",author:"F. Scott Fitzgerald",year:1925,country:"EUA",genre:"Modernismo",century:"XX",description:"A história do misterioso milionário Jay Gatsby e seu amor pela encantadora Daisy Buchanan, retratando a decadência da Era do Jazz americana."},
+  {rank:10,title:"Cem Anos de Solidão",author:"Gabriel García Márquez",year:1967,country:"Colômbia",genre:"Realismo Mágico",century:"XX",description:"A saga da família Buendía ao longo de sete gerações na cidade fictícia de Macondo. A obra-prima do realismo mágico e um dos romances mais vendidos da história."},
+  {rank:11,title:"1984",author:"George Orwell",year:1949,country:"Reino Unido",genre:"Distopia",century:"XX",description:"Winston Smith luta contra o regime totalitário do Grande Irmão num futuro distópico. Um dos romances políticos mais influentes já escritos."},
+  {rank:12,title:"Admirável Mundo Novo",author:"Aldous Huxley",year:1932,country:"Reino Unido",genre:"Distopia",century:"XX",description:"Uma sociedade futurista onde os seres humanos são produzidos em laboratório e condicionados para a felicidade. Uma distopia que antecipou muitos aspectos do mundo moderno."},
+  {rank:13,title:"Orgulho e Preconceito",author:"Jane Austen",year:1813,country:"Reino Unido",genre:"Romance",century:"XIX",description:"A história de Elizabeth Bennet e o orgulhoso Mr. Darcy. Uma das histórias de amor mais amadas da literatura inglesa, com brilhante crítica social."},
+  {rank:14,title:"Moby Dick",author:"Herman Melville",year:1851,country:"EUA",genre:"Aventura / Alegoria",century:"XIX",description:"A obsessiva busca do Capitão Ahab pela baleia branca. Uma das grandes alegorias da literatura americana, explorando temas de obsessão, destino e a natureza do mal."},
+  {rank:15,title:"O Processo",author:"Franz Kafka",year:1925,country:"Tchecoslováquia",genre:"Absurdismo",century:"XX",description:"Josef K. é preso e processado por um crime que nunca é revelado. Uma das obras mais perturbadoras e influentes do século XX, que deu origem ao adjetivo 'kafkiano'."},
+  {rank:16,title:"A Metamorfose",author:"Franz Kafka",year:1915,country:"Tchecoslováquia",genre:"Absurdismo",century:"XX",description:"Gregor Samsa acorda transformado em um inseto gigante. Uma das novelas mais famosas da literatura mundial, explorando alienação, identidade e relações familiares."},
+  {rank:17,title:"O Apanhador no Campo de Centeio",author:"J.D. Salinger",year:1951,country:"EUA",genre:"Bildungsroman",century:"XX",description:"Holden Caulfield narra uma semana turbulenta em Nova York após ser expulso do colégio. O romance de formação mais influente do século XX."},
+  {rank:18,title:"Lolita",author:"Vladimir Nabokov",year:1955,country:"EUA",genre:"Romance / Sátira",century:"XX",description:"A obsessão do professor Humbert Humbert pela jovem Dolores Haze. Uma obra controversa e estilisticamente brilhante, considerada uma das maiores realizações literárias do século XX."},
+  {rank:19,title:"O Senhor dos Anéis",author:"J.R.R. Tolkien",year:1954,country:"Reino Unido",genre:"Fantasia Épica",century:"XX",description:"A jornada de Frodo Bolseiro para destruir o Um Anel e derrotar Sauron. A obra fundadora da fantasia épica moderna e um dos livros mais vendidos de todos os tempos."},
+  {rank:20,title:"O Mestre e Margarida",author:"Mikhail Bulgakov",year:1967,country:"URSS",genre:"Realismo Mágico / Sátira",century:"XX",description:"O Diabo visita Moscou soviética, enquanto em Jerusalém Pôncio Pilatos condena Jesus. Uma sátira feroz ao regime soviético e uma das obras mais originais do século XX."},
+  {rank:21,title:"Jane Eyre",author:"Charlotte Brontë",year:1847,country:"Reino Unido",genre:"Romance Gótico",century:"XIX",description:"A história da jovem órfã Jane Eyre e seu relacionamento com o misterioso Mr. Rochester. Um clássico vitoriano de independência feminina e paixão."},
+  {rank:22,title:"O Morro dos Ventos Uivantes",author:"Emily Brontë",year:1847,country:"Reino Unido",genre:"Romance Gótico",century:"XIX",description:"A história de amor obsessiva e destrutiva entre Heathcliff e Catherine Earnshaw nos ermos da Yorkshire. Um dos romances mais apaixonantes da literatura inglesa."},
+  {rank:23,title:"David Copperfield",author:"Charles Dickens",year:1850,country:"Reino Unido",genre:"Bildungsroman",century:"XIX",description:"O romance mais autobiográfico de Dickens, seguindo David desde a infância até a maturidade. Uma obra-prima do realismo vitoriano."},
+  {rank:24,title:"Grandes Esperanças",author:"Charles Dickens",year:1861,country:"Reino Unido",genre:"Bildungsroman",century:"XIX",description:"Pip, um jovem órfão, recebe uma herança misteriosa e sobe na escala social. Uma reflexão sobre ambição, amor e identidade na Inglaterra vitoriana."},
+  {rank:25,title:"As Aventuras de Huckleberry Finn",author:"Mark Twain",year:1884,country:"EUA",genre:"Aventura / Sátira",century:"XIX",description:"Huck Finn e o escravo fugitivo Jim navegam pelo Mississippi. Uma obra profundamente moral sobre liberdade, amizade e os preconceitos da sociedade americana."},
+  {rank:26,title:"Robinson Crusoé",author:"Daniel Defoe",year:1719,country:"Reino Unido",genre:"Aventura",century:"XVIII",description:"Considerado o primeiro romance em língua inglesa, narra a história de um náufrago que sobrevive sozinho numa ilha deserta por 28 anos."},
+  {rank:27,title:"Frankenstein",author:"Mary Shelley",year:1818,country:"Reino Unido",genre:"Gótico / Ficção Científica",century:"XIX",description:"O cientista Victor Frankenstein cria um ser a partir de partes de cadáveres. Considerado o primeiro romance de ficção científica e uma exploração dos limites da ciência."},
+  {rank:28,title:"O Retrato de Dorian Gray",author:"Oscar Wilde",year:1890,country:"Reino Unido",genre:"Gótico / Filosófico",century:"XIX",description:"Dorian Gray mantém sua juventude enquanto um retrato envelhece em seu lugar. Uma exploração brilhante da vaidade, corrupção moral e a natureza da beleza."},
+  {rank:29,title:"O Conde de Monte Cristo",author:"Alexandre Dumas",year:1844,country:"França",genre:"Aventura / Thriller",century:"XIX",description:"Edmond Dantès é injustamente preso e, após escapar, busca vingança contra seus inimigos. Uma obra-prima da literatura de aventura e um dos romances mais lidos de todos os tempos."},
+  {rank:30,title:"As Viagens de Gulliver",author:"Jonathan Swift",year:1726,country:"Irlanda",genre:"Sátira / Fantasia",century:"XVIII",description:"As aventuras fantásticas de Lemuel Gulliver em terras imaginárias. Uma sátira devastadora da natureza humana, da política e da sociedade europeia."},
+  {rank:31,title:"Alice no País das Maravilhas",author:"Lewis Carroll",year:1865,country:"Reino Unido",genre:"Fantasia",century:"XIX",description:"Alice cai numa toca de coelho e descobre um mundo absurdo e mágico. Uma obra de fantasia e lógica nonsense que continua a encantar leitores de todas as idades."},
+  {rank:32,title:"O Vermelho e o Negro",author:"Stendhal",year:1830,country:"França",genre:"Realismo",century:"XIX",description:"Julien Sorel, filho de um carpinteiro, sobe na sociedade francesa através de ambição e sedução. Um dos primeiros grandes romances realistas da literatura."},
+  {rank:33,title:"A Montanha Mágica",author:"Thomas Mann",year:1924,country:"Alemanha",genre:"Modernismo",century:"XX",description:"Hans Castorp visita um sanatório nos Alpes suíços e acaba ficando sete anos. Uma exploração profunda das ideias europeias antes da Primeira Guerra Mundial."},
+  {rank:34,title:"O Som e a Fúria",author:"William Faulkner",year:1929,country:"EUA",genre:"Modernismo",century:"XX",description:"A decadência da família Compson no sul dos EUA, narrada por quatro vozes distintas. Uma das obras mais complexas e inovadoras da literatura americana."},
+  {rank:35,title:"Enquanto Agonizo",author:"William Faulkner",year:1930,country:"EUA",genre:"Modernismo",century:"XX",description:"A família Bundren transporta o caixão da matriarca Addie por 40 milhas. Narrado por 15 vozes diferentes, é uma comédia negra e perturbadora."},
+  {rank:36,title:"A Sra. Dalloway",author:"Virginia Woolf",year:1925,country:"Reino Unido",genre:"Modernismo",century:"XX",description:"Um único dia na vida de Clarissa Dalloway em Londres pós-guerra. Uma obra-prima do fluxo de consciência e da exploração da experiência interior."},
+  {rank:37,title:"Para o Farol",author:"Virginia Woolf",year:1927,country:"Reino Unido",genre:"Modernismo",century:"XX",description:"A família Ramsay e seus hóspedes numa ilha escocesa. Uma meditação sobre o tempo, a arte, a morte e as relações humanas."},
+  {rank:38,title:"O Estrangeiro",author:"Albert Camus",year:1942,country:"França/Argélia",genre:"Existencialismo",century:"XX",description:"Meursault mata um árabe numa praia argelina e enfrenta as consequências com indiferença. A obra-prima do absurdismo e um dos romances mais importantes do século XX."},
+  {rank:39,title:"A Náusea",author:"Jean-Paul Sartre",year:1938,country:"França",genre:"Existencialismo",century:"XX",description:"Antoine Roquentin experimenta uma profunda crise existencial numa cidade portuária francesa. O romance fundador do existencialismo literário."},
+  {rank:40,title:"Doutor Jivago",author:"Boris Pasternak",year:1957,country:"URSS",genre:"Romance Histórico",century:"XX",description:"A história do médico e poeta Yuri Jivago durante a Revolução Russa e a Guerra Civil. Proibido na URSS, ganhou o Nobel de Literatura em 1958."},
+  {rank:41,title:"Beloved",author:"Toni Morrison",year:1987,country:"EUA",genre:"Romance",century:"XX",description:"Uma ex-escrava é assombrada pelo fantasma de sua filha morta. Vencedor do Pulitzer, é considerado um dos maiores romances americanos sobre a escravidão."},
+  {rank:42,title:"O Sol Também Se Levanta",author:"Ernest Hemingway",year:1926,country:"EUA",genre:"Modernismo",century:"XX",description:"Um grupo de expatriados americanos e britânicos viaja de Paris para Pamplona para as touradas. O romance que definiu a Geração Perdida."},
+  {rank:43,title:"O Velho e o Mar",author:"Ernest Hemingway",year:1952,country:"EUA",genre:"Novela",century:"XX",description:"O velho pescador Santiago luta durante dias com um enorme marlim. Uma parábola sobre perseverança, honra e a luta do homem contra a natureza."},
+  {rank:44,title:"O Sol é Para Todos",author:"Harper Lee",year:1960,country:"EUA",genre:"Romance",century:"XX",description:"Scout Finch narra a defesa de seu pai, o advogado Atticus Finch, de um homem negro injustamente acusado no sul dos EUA. Um clássico sobre justiça racial."},
+  {rank:45,title:"O Senhor das Moscas",author:"William Golding",year:1954,country:"Reino Unido",genre:"Alegoria",century:"XX",description:"Garotos ingleses naufragam numa ilha deserta e gradualmente se tornam selvagens. Uma visão perturbadora da natureza humana e da fragilidade da civilização."},
+  {rank:46,title:"Catch-22",author:"Joseph Heller",year:1961,country:"EUA",genre:"Sátira",century:"XX",description:"O Capitão Yossarian tenta escapar da loucura da Segunda Guerra Mundial. Uma das sátiras mais devastadoras sobre a guerra e a burocracia militar."},
+  {rank:47,title:"A Insustentável Leveza do Ser",author:"Milan Kundera",year:1984,country:"Tchecoslováquia",genre:"Romance Filosófico",century:"XX",description:"Dois casais navegam por amor, política e existência na Praga da Primavera de 1968. Uma meditação profunda sobre leveza, peso, liberdade e destino."},
+  {rank:48,title:"O Nome da Rosa",author:"Umberto Eco",year:1980,country:"Itália",genre:"Romance Histórico",century:"XX",description:"O frade Guilherme de Baskerville investiga uma série de mortes misteriosas num mosteiro medieval. Um romance erudito que combina mistério, filosofia e história."},
+  {rank:49,title:"Pedro Páramo",author:"Juan Rulfo",year:1955,country:"México",genre:"Realismo Mágico",century:"XX",description:"Juan Preciado viaja ao vilarejo de Comala em busca de seu pai, Pedro Páramo, e encontra apenas fantasmas. Uma obra fundadora do realismo mágico latino-americano."},
+  {rank:50,title:"Grande Sertão: Veredas",author:"João Guimarães Rosa",year:1956,country:"Brasil",genre:"Romance Regional",century:"XX",description:"Riobaldo, um ex-jagunço, narra sua vida no sertão brasileiro e seu pacto com o diabo. Considerado o maior romance da literatura brasileira."},
+  {rank:51,title:"Middlemarch",author:"George Eliot",year:1871,country:"Reino Unido",genre:"Realismo",century:"XIX",description:"Um retrato abrangente da vida numa cidade provincial inglesa, centrado na idealista Dorothea Brooke. Frequentemente citado como o maior romance em língua inglesa."},
+  {rank:52,title:"O Homem Invisível",author:"Ralph Ellison",year:1952,country:"EUA",genre:"Modernismo",century:"XX",description:"Um homem negro narra sua jornada pela América, invisível aos olhos da sociedade branca. Um dos romances mais importantes sobre raça e identidade na América."},
+  {rank:53,title:"Matadouro Cinco",author:"Kurt Vonnegut",year:1969,country:"EUA",genre:"Ficção Científica",century:"XX",description:"Billy Pilgrim, um soldado americano, viaja no tempo e testemunha o bombardeio de Dresden. Uma das obras antibelicistas mais importantes da literatura americana."},
+  {rank:54,title:"A Revolução dos Bichos",author:"George Orwell",year:1945,country:"Reino Unido",genre:"Sátira Política",century:"XX",description:"Os animais de uma fazenda se rebelam contra seus donos humanos. Uma fábula política devastadora sobre totalitarismo e traição dos ideais revolucionários."},
+  {rank:55,title:"O Tambor de Lata",author:"Günter Grass",year:1959,country:"Alemanha",genre:"Realismo Mágico",century:"XX",description:"Oskar Matzerath decide parar de crescer aos três anos e narra a história da Alemanha nazista. Um dos romances mais importantes da literatura alemã do pós-guerra."},
+  {rank:56,title:"O Mundo se Despedaça",author:"Chinua Achebe",year:1958,country:"Nigéria",genre:"Romance",century:"XX",description:"A história de Okonkwo e a destruição da sociedade igbo pela colonização britânica. O romance africano mais lido do mundo e um clássico da literatura pós-colonial."},
+  {rank:57,title:"Nostromo",author:"Joseph Conrad",year:1904,country:"Reino Unido",genre:"Romance",century:"XX",description:"Uma história de dinheiro, amor e política revolucionária numa república sul-americana fictícia. Considerado a obra-prima de Conrad."},
+  {rank:58,title:"O Coração das Trevas",author:"Joseph Conrad",year:1899,country:"Reino Unido",genre:"Novela",century:"XIX",description:"Marlow viaja pelo Congo em busca do misterioso Kurtz. Uma exploração profunda do imperialismo europeu e da escuridão da natureza humana."},
+  {rank:59,title:"O Retrato de uma Senhora",author:"Henry James",year:1881,country:"EUA",genre:"Realismo",century:"XIX",description:"Isabel Archer, uma jovem americana independente, vai para a Europa e enfrenta as consequências de suas escolhas. Uma das obras mais refinadas de Henry James."},
+  {rank:60,title:"A Passagem para a Índia",author:"E.M. Forster",year:1924,country:"Reino Unido",genre:"Romance",century:"XX",description:"As relações entre ingleses e indianos durante o período colonial britânico. Uma exploração perspicaz do imperialismo, preconceito e incompreensão cultural."},
+  {rank:61,title:"Na Estrada",author:"Jack Kerouac",year:1957,country:"EUA",genre:"Aventura",century:"XX",description:"Sal Paradise e Dean Moriarty cruzam os EUA em busca de experiências e liberdade. A bíblia da Geração Beat e um hino à liberdade americana."},
+  {rank:62,title:"As Uvas da Ira",author:"John Steinbeck",year:1939,country:"EUA",genre:"Realismo Social",century:"XX",description:"A família Joad migra de Oklahoma para a Califórnia durante a Grande Depressão. Vencedor do Pulitzer e do National Book Award, um dos grandes romances americanos."},
+  {rank:63,title:"O Despertar",author:"Kate Chopin",year:1899,country:"EUA",genre:"Realismo",century:"XIX",description:"Edna Pontellier desperta para sua própria identidade e desejos na Louisiana do século XIX. Uma obra revolucionária sobre autonomia feminina, muito à frente de seu tempo."},
+  {rank:64,title:"O Retrato do Artista Quando Jovem",author:"James Joyce",year:1916,country:"Irlanda",genre:"Bildungsroman",century:"XX",description:"Stephen Dedalus cresce na Irlanda católica e descobre sua vocação artística. Um romance de formação revolucionário que antecipa as técnicas do Ulysses."},
+  {rank:65,title:"Trevas ao Meio-Dia",author:"Arthur Koestler",year:1940,country:"Reino Unido",genre:"Romance Político",century:"XX",description:"Rubashov, um veterano comunista, é preso e interrogado pelo regime stalinista. Uma das análises mais penetrantes do totalitarismo já escritas."},
+  {rank:66,title:"Filhos da Meia-Noite",author:"Salman Rushdie",year:1981,country:"Reino Unido",genre:"Realismo Mágico",century:"XX",description:"Saleem Sinai nasce exatamente no momento da independência da Índia e descobre que está telepaticamente ligado a outras crianças nascidas na mesma hora. Vencedor do Booker Prize."},
+  {rank:67,title:"O Médico e o Monstro",author:"Robert Louis Stevenson",year:1886,country:"Reino Unido",genre:"Gótico",century:"XIX",description:"O Dr. Jekyll cria uma poção que libera seu alter ego malévolo, Mr. Hyde. Uma exploração brilhante da dualidade humana."},
+  {rank:68,title:"Drácula",author:"Bram Stoker",year:1897,country:"Irlanda",genre:"Gótico / Horror",century:"XIX",description:"O Conde Drácula tenta se mudar da Transilvânia para a Inglaterra. O romance que definiu o mito moderno do vampiro e um clássico do horror gótico."},
+  {rank:69,title:"A Letra Escarlate",author:"Nathaniel Hawthorne",year:1850,country:"EUA",genre:"Romance Histórico",century:"XIX",description:"Hester Prynne é condenada a usar a letra A por adultério na Boston puritana do século XVII. Uma investigação profunda do pecado, culpa e redenção."},
+  {rank:70,title:"O Idiota",author:"Fyodor Dostoevsky",year:1869,country:"Rússia",genre:"Romance Psicológico",century:"XIX",description:"O príncipe Myshkin, um homem genuinamente bom e ingênuo, enfrenta a sociedade russa corrupta. Uma exploração da bondade humana num mundo imperfeito."},
+  {rank:71,title:"Siddhartha",author:"Hermann Hesse",year:1922,country:"Alemanha",genre:"Romance Filosófico",century:"XX",description:"A jornada espiritual de Siddhartha em busca da iluminação na Índia antiga. Uma meditação sobre o sentido da vida e os caminhos para a sabedoria."},
+  {rank:72,title:"O Lobo da Estepe",author:"Hermann Hesse",year:1927,country:"Alemanha",genre:"Modernismo",century:"XX",description:"Harry Haller, um intelectual solitário, enfrenta sua natureza dupla de homem e lobo. Uma exploração da alienação moderna e da busca por significado."},
+  {rank:73,title:"Ligações Perigosas",author:"Pierre Choderlos de Laclos",year:1782,country:"França",genre:"Romance Epistolar",century:"XVIII",description:"O Visconde de Valmont e a Marquesa de Merteuil manipulam e seduzem suas vítimas através de cartas. Um romance epistolar devastador sobre sedução e poder."},
+  {rank:74,title:"O Mago",author:"John Fowles",year:1965,country:"Reino Unido",genre:"Pós-modernismo",century:"XX",description:"Nicholas Urfe, um professor inglês numa ilha grega, é envolvido nos jogos psicológicos do misterioso Conchis. Um thriller pós-moderno fascinante."},
+  {rank:75,title:"A Trilogia de Nova York",author:"Paul Auster",year:1987,country:"EUA",genre:"Pós-modernismo",century:"XX",description:"Três novelas interligadas que brincam com as convenções do romance policial. Um thriller metafísico deslumbrante ambientado em Manhattan."},
+  {rank:76,title:"Se Numa Noite de Inverno um Viajante",author:"Italo Calvino",year:1979,country:"Itália",genre:"Pós-modernismo",century:"XX",description:"Um romance sobre o ato de ler, onde o leitor é o protagonista. Uma das obras mais originais e inventivas da literatura italiana."},
+  {rank:77,title:"Austerlitz",author:"W.G. Sebald",year:2001,country:"Alemanha",genre:"Modernismo",century:"XXI",description:"Jacques Austerlitz descobre suas origens judaicas e o destino de seus pais durante o Holocausto. Uma obra de memória e melancolia de rara beleza."},
+  {rank:78,title:"Pastoral Americana",author:"Philip Roth",year:1997,country:"EUA",genre:"Romance",century:"XX",description:"A vida do 'Sueco' Levov é destruída pela turbulência dos anos 1960. Vencedor do Pulitzer, é considerado a obra-prima de Philip Roth."},
+  {rank:79,title:"A Hora da Estrela",author:"Clarice Lispector",year:1977,country:"Brasil",genre:"Modernismo",century:"XX",description:"A história de Macabéa, uma jovem nordestina perdida no Rio de Janeiro. A última obra de Clarice Lispector e um dos maiores romances brasileiros."},
+  {rank:80,title:"Filhos e Amantes",author:"D.H. Lawrence",year:1913,country:"Reino Unido",genre:"Bildungsroman",century:"XX",description:"Paul Morel cresce numa família de mineradores ingleses e enfrenta conflitos entre amor materno e paixões românticas. Um dos grandes romances autobiográficos."},
+  {rank:81,title:"O Bom Soldado",author:"Ford Madox Ford",year:1915,country:"Reino Unido",genre:"Modernismo",century:"XX",description:"A história adúltera de dois casais eduardianos, narrada de forma não-linear. Um clássico da narração não-confiável."},
+  {rank:82,title:"Demian",author:"Hermann Hesse",year:1919,country:"Alemanha",genre:"Bildungsroman",century:"XX",description:"Emil Sinclair cresce sob a influência do misterioso Max Demian. Uma exploração junguiana da individuação e do autoconhecimento."},
+  {rank:83,title:"A Canção de Salomão",author:"Toni Morrison",year:1977,country:"EUA",genre:"Realismo Mágico",century:"XX",description:"Milkman Dead busca sua herança e identidade no sul dos EUA. Uma exploração épica da experiência afro-americana através de mito e magia."},
+  {rank:84,title:"O Hobbit",author:"J.R.R. Tolkien",year:1937,country:"Reino Unido",genre:"Fantasia",century:"XX",description:"Bilbo Bolseiro parte em aventura com um grupo de anões para recuperar um tesouro guardado pelo dragão Smaug. O precursor do Senhor dos Anéis."},
+  {rank:85,title:"O Pequeno Príncipe",author:"Antoine de Saint-Exupéry",year:1943,country:"França",genre:"Fábula",century:"XX",description:"Um piloto encontra um pequeno príncipe no deserto do Saara. Uma fábula poética sobre amizade, amor e o que realmente importa na vida."},
+  {rank:86,title:"Vanity Fair",author:"William Makepeace Thackeray",year:1848,country:"Reino Unido",genre:"Sátira Social",century:"XIX",description:"A ascensão e queda de Becky Sharp na sociedade inglesa do século XIX. Uma sátira mordaz da vaidade e hipocrisia da sociedade vitoriana."},
+  {rank:87,title:"Germinal",author:"Émile Zola",year:1885,country:"França",genre:"Naturalismo",century:"XIX",description:"A vida dos mineiros de carvão no norte da França e sua luta por condições dignas de trabalho. A obra-prima do naturalismo literário."},
+  {rank:88,title:"A Dama das Camélias",author:"Alexandre Dumas Filho",year:1848,country:"França",genre:"Romance",century:"XIX",description:"A história de amor trágica entre o jovem Armand Duval e a cortesã Marguerite Gautier. Uma das histórias de amor mais comoventes da literatura francesa."},
+  {rank:89,title:"O Livro do Riso e do Esquecimento",author:"Milan Kundera",year:1979,country:"Tchecoslováquia",genre:"Romance Filosófico",century:"XX",description:"Inspirado pela invasão soviética da Tchecoslováquia em 1968, é uma fusão mágica de história, autobiografia e ideias sobre memória e esquecimento."},
+  {rank:90,title:"O Castelo",author:"Franz Kafka",year:1926,country:"Tchecoslováquia",genre:"Absurdismo",century:"XX",description:"K. chega a uma aldeia e tenta obter acesso ao misterioso Castelo que governa a região, sem nunca conseguir. Uma alegoria da burocracia e da alienação."},
+  {rank:91,title:"O Coração é um Caçador Solitário",author:"Carson McCullers",year:1940,country:"EUA",genre:"Romance",century:"XX",description:"John Singer, um homem surdo-mudo, torna-se confidente de vários personagens solitários numa cidade do sul dos EUA. Uma exploração da solidão e da comunicação humana."},
+  {rank:92,title:"Submundo",author:"Don DeLillo",year:1997,country:"EUA",genre:"Pós-modernismo",century:"XX",description:"Uma épica americana que começa com o jogo de beisebol de 1951 e se estende pela segunda metade do século XX. Um dos maiores romances americanos contemporâneos."},
+  {rank:93,title:"O Amante de Lady Chatterley",author:"D.H. Lawrence",year:1928,country:"Reino Unido",genre:"Romance",century:"XX",description:"Lady Chatterley tem um caso com o guarda-caça de sua propriedade. Proibido por décadas por obscenidade, é uma exploração da classe social e da sexualidade."},
+  {rank:94,title:"Eugênia Grandet",author:"Honoré de Balzac",year:1833,country:"França",genre:"Realismo",century:"XIX",description:"A história de Eugênia Grandet, filha de um avarento, e seu amor trágico. Uma das obras mais conhecidas da Comédia Humana de Balzac."},
+  {rank:95,title:"O Mágico de Oz",author:"L. Frank Baum",year:1900,country:"EUA",genre:"Fantasia",century:"XX",description:"Dorothy é levada por um tornado para a terra mágica de Oz, onde embarca numa aventura para encontrar o caminho de volta para casa. Um clássico da fantasia americana."},
+  {rank:96,title:"Eugênio Oneguin",author:"Alexander Pushkin",year:1833,country:"Rússia",genre:"Romance em Verso",century:"XIX",description:"O jovem aristocrata Eugênio Oneguin rejeita o amor de Tatiana e enfrenta as consequências de sua frivolidade. O romance em verso mais famoso da literatura russa."},
+  {rank:97,title:"O Coração Delator e Outros Contos",author:"Edgar Allan Poe",year:1843,country:"EUA",genre:"Horror / Gótico",century:"XIX",description:"Uma coleção dos melhores contos de Poe, incluindo obras-primas do horror psicológico e do suspense. Poe é considerado o inventor do conto moderno e do romance policial."},
+  {rank:98,title:"A Balada de Pássaros e Serpentes",author:"Suzanne Collins",year:2020,country:"EUA",genre:"Distopia",century:"XXI",description:"Prequel dos Jogos Vorazes, focado no jovem Coriolanus Snow. Uma exploração das origens do poder e da corrupção."},
+  {rank:99,title:"O Medo e o Tremor",author:"Amélie Nothomb",year:1999,country:"Bélgica",genre:"Sátira",century:"XX",description:"Uma jovem belga trabalha numa empresa japonesa e enfrenta a rígida hierarquia corporativa nipônica. Uma sátira brilhante sobre cultura e identidade."},
+  {rank:100,title:"O Deserto dos Tártaros",author:"Dino Buzzati",year:1940,country:"Itália",genre:"Alegoria",century:"XX",description:"O tenente Drogo chega a uma fortaleza isolada e passa décadas esperando um inimigo que nunca chega. Uma alegoria sobre a espera, o tempo e o sentido da vida."}
+];
+
+// ===== INIT =====
+let currentView = 'grid';
+let filteredBooks = [...books];
+let readBooks = new Set();
+
+// Load read books from localStorage
+function loadReadBooks() {
+  const saved = localStorage.getItem('readBooks');
+  if (saved) {
+    readBooks = new Set(JSON.parse(saved));
+  }
+}
+
+// Save read books to localStorage
+function saveReadBooks() {
+  localStorage.setItem('readBooks', JSON.stringify([...readBooks]));
+}
+
+// Toggle read status
+function toggleRead(rank) {
+  if (readBooks.has(rank)) {
+    readBooks.delete(rank);
+  } else {
+    readBooks.add(rank);
+  }
+  saveReadBooks();
+}
+
+// Update progress bar
+function updateProgress() {
+  const total = books.length;
+  const read = readBooks.size;
+  const percentage = (read / total) * 100;
+  document.getElementById('progressFill').style.width = percentage + '%';
+  document.getElementById('progressText').textContent = read + '/' + total;
+}
+
+// Update card appearance
+function updateCard(rank) {
+  const book = books.find(b => b.rank === rank);
+  if (!book) return;
+  renderBooks(filteredBooks);
+}
+
+function init() {
+  // Load read books
+  loadReadBooks();
+  
+  // Stats
+  const authors = new Set(books.map(b => b.author));
+  const countries = new Set(books.map(b => b.country));
+  const years = books.map(b => b.year);
+  document.getElementById('stat-authors').textContent = authors.size;
+  document.getElementById('stat-countries').textContent = countries.size;
+  document.getElementById('stat-span').textContent = Math.max(...years) - Math.min(...years);
+
+  // Populate filters
+  const genres = [...new Set(books.map(b => b.genre))].sort();
+  const genreSelect = document.getElementById('filterGenre');
+  genres.forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g; opt.textContent = g;
+    genreSelect.appendChild(opt);
+  });
+
+  const countryList = [...new Set(books.map(b => b.country))].sort();
+  const countrySelect = document.getElementById('filterCountry');
+  countryList.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c; opt.textContent = c;
+    countrySelect.appendChild(opt);
+  });
+
+  renderBooks(books);
+  renderTimeline();
+  updateProgress();
+}
+
+// ===== TABS =====
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (name === 'graficos') renderCharts();
+}
+
+// ===== VIEW =====
+function setView(v) {
+  currentView = v;
+  const grid = document.getElementById('booksGrid');
+  document.getElementById('gridBtn').classList.toggle('active', v === 'grid');
+  document.getElementById('listBtn').classList.toggle('active', v === 'list');
+  if (v === 'list') grid.classList.add('list-view');
+  else grid.classList.remove('list-view');
+}
+
+// ===== FILTER =====
+function filterBooks() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const genre = document.getElementById('filterGenre').value;
+  const country = document.getElementById('filterCountry').value;
+  const century = document.getElementById('filterCentury').value;
+
+  filteredBooks = books.filter(b => {
+    const matchQ = !q || b.title.toLowerCase().includes(q) || b.author.toLowerCase().includes(q) || b.genre.toLowerCase().includes(q) || b.description.toLowerCase().includes(q);
+    const matchGenre = !genre || b.genre === genre;
+    const matchCountry = !country || b.country === country;
+    const matchCentury = !century || b.century === century;
+    return matchQ && matchGenre && matchCountry && matchCentury;
+  });
+
+  document.getElementById('resultsCount').textContent = filteredBooks.length + ' obra' + (filteredBooks.length !== 1 ? 's' : '');
+  renderBooks(filteredBooks);
+  document.getElementById('emptyState').style.display = filteredBooks.length === 0 ? 'block' : 'none';
+}
+
+// ===== RENDER BOOKS =====
+function getRankBadgeClass(rank) {
+  if (rank === 1) return 'rank-1';
+  if (rank === 2) return 'rank-2';
+  if (rank === 3) return 'rank-3';
+  return 'rank-other';
+}
+
+function renderBooks(list) {
+  const grid = document.getElementById('booksGrid');
+  grid.innerHTML = '';
+  list.forEach(b => {
+    const isRead = readBooks.has(b.rank);
+    const card = document.createElement('div');
+    card.className = 'book-card' + (isRead ? ' read' : '');
+    card.innerHTML = `
+      <input type="checkbox" class="book-checkbox" ${isRead ? 'checked' : ''} onclick="event.stopPropagation(); toggleRead(${b.rank}); updateCard(${b.rank});">
+      <div class="book-card-content" onclick="openModal(${b.rank})" style="cursor:pointer;">
+        <div class="book-rank">
+          <span class="rank-badge ${getRankBadgeClass(b.rank)}">${b.rank}</span>
+        </div>
+        <div class="book-title">${b.title}</div>
+        <div class="book-author">${b.author}</div>
+        <div class="book-meta">
+          <span class="tag year">${b.year}</span>
+          <span class="tag country">${b.country}</span>
+          <span class="tag genre">${b.genre}</span>
+        </div>
+        <div class="book-desc">${b.description}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+  updateProgress();
+}
+
+// ===== MODAL =====
+function openModal(b) {
+  document.getElementById('modalRank').textContent = '#' + b.rank;
+  document.getElementById('modalTitle').textContent = b.title;
+  document.getElementById('modalAuthor').textContent = b.author;
+  document.getElementById('modalDesc').textContent = b.description;
+  document.getElementById('modalTags').innerHTML = `
+    <span class="modal-tag year">📅 ${b.year}</span>
+    <span class="modal-tag country">🌍 ${b.country}</span>
+    <span class="modal-tag genre">📖 ${b.genre}</span>
+    <span class="modal-tag century">⏳ Século ${b.century}</span>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModalDirect();
+}
+
+function closeModalDirect() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModalDirect(); });
+
+// ===== TIMELINE =====
+function renderTimeline() {
+  const sorted = [...books].sort((a, b) => a.year - b.year);
+  const grid = document.getElementById('timelineGrid');
+  sorted.forEach(b => {
+    const item = document.createElement('div');
+    item.className = 'timeline-item';
+    item.onclick = () => openModal(b);
+    item.innerHTML = `
+      <div class="timeline-year">${b.year}</div>
+      <div class="timeline-title">${b.title}</div>
+      <div class="timeline-author">${b.author}</div>
+    `;
+    grid.appendChild(item);
+  });
+}
+
+// ===== CHARTS =====
+let chartsRendered = false;
+
+function renderCharts() {
+  if (chartsRendered) return;
+  chartsRendered = true;
+
+  const chartDefaults = {
+    plugins: { legend: { labels: { color: '#a0a0c0', font: { family: 'Georgia' } } } },
+    scales: {}
+  };
+
+  const accentColors = ['#c9a84c','#7eb8f7','#b8f7a0','#f7b8e0','#f7d4a0','#c0a0f7','#f7a0a0','#a0f7f0','#f0f7a0','#f7c0a0'];
+
+  // 1. Century chart
+  const centuryCount = {};
+  books.forEach(b => { centuryCount[b.century] = (centuryCount[b.century] || 0) + 1; });
+  const centuryOrder = ['XVII','XVIII','XIX','XX','XXI'];
+  new Chart(document.getElementById('chartCentury'), {
+    type: 'bar',
+    data: {
+      labels: centuryOrder.map(c => 'Séc. ' + c),
+      datasets: [{
+        label: 'Obras',
+        data: centuryOrder.map(c => centuryCount[c] || 0),
+        backgroundColor: accentColors,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#a0a0c0' }, grid: { color: 'rgba(42,42,74,0.5)' } },
+        y: { ticks: { color: '#a0a0c0' }, grid: { color: 'rgba(42,42,74,0.5)' } }
+      }
+    }
+  });
+
+  // 2. Country chart (top 8)
+  const countryCount = {};
+  books.forEach(b => { countryCount[b.country] = (countryCount[b.country] || 0) + 1; });
+  const topCountries = Object.entries(countryCount).sort((a,b) => b[1]-a[1]).slice(0,8);
+  new Chart(document.getElementById('chartCountry'), {
+    type: 'doughnut',
+    data: {
+      labels: topCountries.map(c => c[0]),
+      datasets: [{
+        data: topCountries.map(c => c[1]),
+        backgroundColor: accentColors,
+        borderColor: '#16162a',
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right', labels: { color: '#a0a0c0', font: { size: 11 }, padding: 10 } }
+      }
+    }
+  });
+
+  // 3. Genre chart (top 8)
+  const genreCount = {};
+  books.forEach(b => { genreCount[b.genre] = (genreCount[b.genre] || 0) + 1; });
+  const topGenres = Object.entries(genreCount).sort((a,b) => b[1]-a[1]).slice(0,8);
+  new Chart(document.getElementById('chartGenre'), {
+    type: 'bar',
+    data: {
+      labels: topGenres.map(g => g[0]),
+      datasets: [{
+        label: 'Obras',
+        data: topGenres.map(g => g[1]),
+        backgroundColor: accentColors,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#a0a0c0' }, grid: { color: 'rgba(42,42,74,0.5)' } },
+        y: { ticks: { color: '#a0a0c0', font: { size: 10 } }, grid: { color: 'rgba(42,42,74,0.5)' } }
+      }
+    }
+  });
+
+  // 4. Decade chart (XX century)
+  const decadeCount = {};
+  books.filter(b => b.century === 'XX').forEach(b => {
+    const decade = Math.floor(b.year / 10) * 10;
+    decadeCount[decade] = (decadeCount[decade] || 0) + 1;
+  });
+  const decades = Object.keys(decadeCount).sort();
+  new Chart(document.getElementById('chartDecade'), {
+    type: 'line',
+    data: {
+      labels: decades.map(d => d + 's'),
+      datasets: [{
+        label: 'Obras publicadas',
+        data: decades.map(d => decadeCount[d]),
+        borderColor: '#c9a84c',
+        backgroundColor: 'rgba(201,168,76,0.15)',
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#c9a84c',
+        pointRadius: 5
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: '#a0a0c0' } } },
+      scales: {
+        x: { ticks: { color: '#a0a0c0' }, grid: { color: 'rgba(42,42,74,0.5)' } },
+        y: { ticks: { color: '#a0a0c0' }, grid: { color: 'rgba(42,42,74,0.5)' } }
+      }
+    }
+  });
+
+  // Authors table
+  const authorCount = {};
+  books.forEach(b => { authorCount[b.author] = (authorCount[b.author] || 0) + 1; });
+  const topAuthors = Object.entries(authorCount).filter(a => a[1] > 1).sort((a,b) => b[1]-a[1]);
+  const maxCount = topAuthors[0] ? topAuthors[0][1] : 1;
+  const tbody = document.getElementById('authorsTableBody');
+  topAuthors.forEach((a, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i+1}</td>
+      <td>${a[0]}</td>
+      <td><strong style="color:var(--accent)">${a[1]}</strong></td>
+      <td class="bar-cell"><div class="bar-fill" style="width:${(a[1]/maxCount*100)}%"></div></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ===== START =====
+init();
+</script>
+</body>
+</html>
